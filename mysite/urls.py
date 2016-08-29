@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^ueditor/',include('DjangoUeditor.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^baidumap/$',fistproject_View.baidumap_view,name='baidumapView'),
+    url(r'^file/', include('useMysql.urls')),
 ]
 if settings.DEBUG:
     from django.conf.urls.static import static

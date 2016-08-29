@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     home_display_columns = Column.objects.filter(home_display=True)
     nav_display_columns = Column.objects.filter(nav_display=True)
-    print request.user
+    # print request.user
 
     # columns = Column.objects.all()
     return render(request,'index.html',{'home_display_columns': home_display_columns,
