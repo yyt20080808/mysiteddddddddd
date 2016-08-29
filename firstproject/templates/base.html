@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        body {
+            margin: 0px;
+            padding: 0
+        }
+
+        #div1 {
+            display: none;
+            position: absolute;
+            z-index: 1000;
+            height: 100%;
+            width: 100%;
+            background: #000000;
+            filter: Alpha(opacity=30);
+        }
+
+        #div2 {
+            display: none;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            padding-top: 10%;
+            z-index: 1001;
+            left: 0px;
+            top: 0px;
+        }
+    </style>
+
+    <title>{% block title %}欢迎光临{% endblock title %} - 自强学堂</title>
+
+    <!-- Bootstrap -->
+    <link href="http://apps.bdimg.com/libs/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- 引入下面两个库让 IE8 支持 HTML5 元素 -->
+    <!-- 警告: Respond.js 通过 file:// 浏览的时候不能正常工作！-->
+    <!--[if lt IE 9]>
+      <script src="http://apps.bdimg.com/libs/html5shiv/3.7/html5shiv.min.js"></script>
+      <script src="http://apps.bdimg.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+        body {
+            padding-top: 90px;
+        }
+    </style>
+    {% block css %}
+
+    {% endblock css %}
+
+    {% block js %}
+
+    {% endblock js %}
+</head>
+<body onload="checkCookie()">
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div>
+        <div>
+            <button type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span>Toggle navigation</span>
+            </button>
+            <span><a href="/">自强学堂</a></span>
+            <span>
+                <a style="position: absolute;right: 20%" type="button" id="login" onclick="openme()">登录</a>
+            </span>
+            <span>
+                 <a type="button" id="logout">退出登录</a>
+            </span>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                {% for column in nav_display_columns %}
+                    <li><a href="{{ column.get_absolute_url }}">{{ column.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div id="div1"></div>
+<div id="div2">
+    <table width="30%" border="0" cellpadding="3" cellspacing="1"
+           style="background: #ff7300; position:static;filter:progid:DXImageTransform.Microsoft.DropShadow(color=#f8f6f6,offX=4,offY=4,positives=true)"
+           align="center">
+        <tr id="m_tr">
+            <td><font color="#FFFFFF" style="text-align: center">欢迎登陆：</font></td>
+            <td align="right">
+                <input type="button" value="ｘ" onClick="closeme()" style="cursor: hand;">
+            </td>
+        </tr>
+        <tr>
+            <form name="myform" method="post">
+                <td colspan="2" width="100%" bgcolor="#FFFFFF" height="150">
+
+                    <br>
+                    <div style="text-align: center;padding: 15px">
+                        <span>username:</span>
+                        <input type="text" id="us" name="username" size="10">
+                        <br>
+                        <span>pasword:</span>
+                        <span><input type="password" id="passwd" size="12"></span>
+                        <br><input type="button" name="logoin" value="登陆" onClick="login_my()">
+                        <input type="button" name="exit" value="取消" onClick="closeme()">
+                    </div>
+
+                </td>
+            </form>
+        </tr>
+    </table>
+</div>
+<div class="row clearfix">
+    <div>
+        {% block content %}
+            <h1>自强 新闻网</h1>
+        {% endblock content %}
+    </div>
+</div>
+<div style="padding-bottom: 5px;position: absolute;bottom: 1%">
+    <div>
+        <div class="well well-sm">
+            <div style="text-align:center;">
+                <a href="http://www.baidu.com">免责声明</a> |
+                <a href="http://www.google.com">关于我们</a>
+            </div>
+            <div>
+                自强学堂为非盈利站点，提供的内容仅用于学习和培训，我们不能保证内容一定正确。通过使用本站进行学习随之而来的风险与本站无关。当使用本站时，代表您已接受了本站的使用条款和隐私条款。
+                版权所有，保留一切权利。自强学堂的所有内容仅供测试，是以学习知识和分享知识为目的，对任何法律问题及风险不承担任何责任。
+            </div>
+            <div style="padding-top:10px; text-align: center">
+                自强学堂是用<a href="https://www.djangoproject.com/" target="_blank" rel="nofollow">Django</a>技术开发的站点，托管在<a
+                    href="http://bce.baidu.com/" target="_blank" rel="nofollow">百度开放云</a>平台<br>
+
+                Copyright &copy; 2014 Powered by 自强学堂 All Rights Reserved.
+                <a href="http://www.miitbeian.gov.cn/" rel="nofollow" target="_blank">吉ICP备13002477号-1</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="http://apps.bdimg.com/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://apps.bdimg.com/libs/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#logout").hide();
+        $("#logout").click(function () {
+            $(this).hide();
+            $.ajax({
+                url: '/logout/',//相对应的esb接口地址
+                type: 'POST',
+                data: {really: "I got it"},
+                datatype: "json",
+                success: function (data) {//服务器（接口）返回来的数据
+                    console.log(data, data["returnInfo"]);
+                    if (data["returnInfo"] == "logout") {
+                        var login_user = getCookie("username")
+                        console.log(login_user);
+                        delCookie('username', login_user, 1000);
+                        {#                        $.cookie("username", "", { expires: -1 });#}
+                        $("#login").html("请登录");
+                    }
+
+                },
+            })
+        });
+    });
+    function getCookie(c_name) {
+        if (document.cookie.length > 0) {
+            c_start = document.cookie.indexOf(c_name + "=");
+            if (c_start != -1) {
+                c_start = c_start + c_name.length + 1;
+                c_end = document.cookie.indexOf(";", c_start);
+                if (c_end == -1) c_end = document.cookie.length;
+                return unescape(document.cookie.substring(c_start, c_end));
+            }
+        }
+        return ""
+    }
+    function setCookie(c_name, value, expireminutes) {
+        var exdate = new Date();
+        exdate.setTime(exdate.getTime() + expireminutes * 24 * 60 * 60 * 10);
+        {#       弄cookie得时候一定要添加路径  而且这个时间一定要对,是毫秒级别的#}
+        console.log(exdate.toGMTString());
+        document.cookie = c_name + "=" + (value) + ";expires=" + exdate.toGMTString() + "; path=/";
+    }
+    function delCookie(c_name, value, expireminutes) {
+        var exdate = new Date();
+        exdate.setTime(exdate.getTime() - expireminutes * 24 * 60 * 60 * 1000);
+        {#       弄cookie得时候一定要添加路径  24*60*60*1000 是一天#}
+        console.log(exdate.toGMTString());
+        document.cookie = c_name + "=" + (value) + ";expires=" + exdate.toGMTString() + "; path=/";
+    }
+    function checkCookie() {
+        username = getCookie('username');
+        if (username != null && username != "") {
+            {#            alert('Welcome again ' + username + '!')#}
+            var a = document.getElementById("login");
+            a.innerHTML = "welcome " + username + "!";
+            {#            a.removeAttribute("onclick");#}
+        }
+    }
+    function login_my() {
+        var tel = $("#us").val();
+        var pwd = $("#passwd").val();
+        console.log(tel, pwd);
+        if (tel == "" || pwd == "") {//判断两个均不为空（其他判断规则在其输入时已经判断）
+            alert("账户名和密码均不能为空！");
+            return false;
+        } else {//以上均符合要求，则调用登录esb接口
+            $.ajax({
+                url: '/login/',//相对应的esb接口地址
+                type: 'POST',
+                data: {username: tel, password: pwd},//向服务器（接口）传递的参数
+                dataType: "json",
+                success: function (data) {//服务器（接口）返回来的数据
+                    console.log(data, data["returnInfo"]);
+                    if (data["returnInfo"] == "authed") {
+                        setCookie('username', tel, 365);
+                        var a = document.getElementById("login");
+                        {#                        a.removeAttribute("onclick");#}
+
+                        a.innerHTML = "welcome " + tel;
+                        $("#logout").show();
+                    }
+                    else {
+                        alert(data.returnInfo)
+                    }
+                },
+                error: function () {
+                    alert("something is wrong")
+                }
+            });
+
+        }
+        closeme()
+
+    }
+    function closeme() {
+        document.getElementById("div1").style.display = 'none';
+        document.getElementById("div2").style.display = 'none';
+    }
+    function openme() {
+        document.getElementById("div1").style.display = 'block';
+        document.getElementById("div2").style.display = 'block';
+    }
+</script>
+
+{% include "baidutongji.html" %}
+</body>
+</html>
